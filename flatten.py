@@ -5,6 +5,9 @@
 #Titles? are currently ignored.
 #Assuming one PrintSpace per file.
 #Assuming same elements/order in file - should do this on names.
+#Some of the extra info - page etc could be useful?
+#Not sure what the positions actually mean.
+#Perhaps parse the inputs to move to lowercase and strip punctuation?
 
 #Could easily add page info to each string too
 #Could fairly easily code in the postion in a sentance.
