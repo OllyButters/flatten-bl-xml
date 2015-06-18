@@ -7,17 +7,20 @@
 #Assuming same elements/order in file - should do this on names.
 #Some of the extra info - page etc could be useful?
 #Not sure what the positions actually mean.
-#Perhaps parse the inputs to move to lowercase and strip punctuation?
 
 #Could easily add page info to each string too
 #Could fairly easily code in the postion in a sentance.
 
 #need to note the data type in opal
-#string, string, int, int, int, int, decimal, int
+#id,     content, clean_content, hpos, vpos, width, height, wc,      cc,  page
+#string, string,  string,        int,  int,  int,   int,    decimal, int, int
 
 import xml.etree.ElementTree as ET
 import csv
 import os
+
+clean = True
+
 
 pages = os.listdir('data')
 #print pages
@@ -27,7 +30,7 @@ with open('data.csv','wb') as csvfile:
     string_file = csv.writer(csvfile)
 
     #opal likes a header in its csv file imports
-    string_file.writerow(['id', 'content', 'hpos', 'vpos', 'width', 'height', 'wc', 'cc'])
+    string_file.writerow(['id', 'content', 'clean_content', 'hpos', 'vpos', 'width', 'height', 'wc', 'cc', 'page'])
 
     #cycle through each page
     for this_page in pages:
@@ -56,5 +59,15 @@ with open('data.csv','wb') as csvfile:
                     content = this_string.get('CONTENT')
                     wc = this_string.get('WC')
                     cc = this_string.get('CC')
-                    print content, id, hpos, vpos, width, height, wc, cc
-                    string_file.writerow([id, content.encode('utf-8'), hpos, vpos, width, height, wc, cc])
+                    
+                    #Clean the content, i.e. the actual words. 
+                    if clean:
+                        #Lets make it all lower case.
+                        clean_content = content.lower()
+                        
+                        #Get rid of punctuation
+                        clean_content = clean_content.strip('.,!?";:-')
+
+
+                    print content, clean_content, id, hpos, vpos, width, height, wc, cc
+                    string_file.writerow([id, content.encode('utf-8'), clean_content.encode('utf-8'), hpos, vpos, width, height, wc, cc])
