@@ -42,140 +42,178 @@ for this_book in books:
     
     
     #Table definition
-    this_table = {'name': table_name, 'entityType': 'Book'}
+    this_table_dic = {'entityType': 'Book', 'name': table_name}
+
+    #this_table = '{\n    "name": "'+table_name+'",\n    "entityType": "Participant"\n}'
+    #print this_table
+
+    #text_file = open("my_table.json", "wb")
+    #text_file.write(this_table)
+    #text_file.close()
 
     #save it as a json file
-    #this_table_json_name = 'temp/'+table_name+'.json'
-    this_table_json_name = 'my_table.json'
+    this_table_json_name = 'temp/'+table_name+'.json'
+    #this_table_json_name = 'my_table.json'
     with open(this_table_json_name, 'w') as fp:
-        json.dump(this_table, fp)
+        json.dump(this_table_dic, fp, indent=4)
         
-        #Push the above json file into the opal API, this will make an empty table i.e. no variables.
-        #cmd = 'opal rest -o http://192.168.56.101:8080 -u administrator -p password -m POST -ct "application/json" /datasource/bl/tables < '+this_table_json_name
-        cmd = 'opal rest -o http://192.168.56.101:8080 -u administrator -p password -m POST -ct "application/json" /datasource/bl/tables < my_table.json'
-        print cmd
+    #Push the above json file into the opal API, this will make an empty table i.e. no variables.
+    #cmd = 'opal rest -o http://192.168.56.101:8080 -u administrator -p password -m POST -ct "application/json" /datasource/bl/tables < '+this_table_json_name
+    cmd = 'opal rest -o http://192.168.56.101:8080 -u administrator -p password -m POST -ct "application/json" /datasource/bl/tables < my_table.json'
+    print cmd
+    
+    
+    #cmd = 'opal rest -o http://192.168.56.101:8080 -u administrator -p password -m POST -ct "application/json" /datasource/bl/tables < my_table.json'
+    
+    #works when an exit after - and needs an enter, I think.
+    #subprocess.Popen(['opal rest -o http://192.168.56.101:8080 -u administrator -p password -m POST -ct "application/json" /datasource/bl/tables < my_table.json'], shell=True)
+    
+    #currently doesnt work.
+    #this works if you exit afterwards.
+    #temp = subprocess.Popen([cmd], shell=True)
+    #temp.wait()
+    #print temp.returncode
+    #exit()
+    
+    #ime.sleep(10)
+    #emp.kill()
 
-        #works
-        #cmd = 'opal rest -o http://192.168.56.101:8080 -u administrator -p password -m POST -ct "application/json" /datasource/bl/tables < my_table.json'
-        #subprocess.Popen(['opal rest -o http://192.168.56.101:8080 -u administrator -p password -m POST -ct "application/json" /datasource/bl/tables < my_table.json'], shell=True)
-
-        #this works if you exit afterwards.
-        temp = subprocess.Popen([cmd], shell=True)
-        temp.wait()
-        print temp.returncode
-        #exit()
-        
-        #ime.sleep(10)
-        #emp.kill()
-
-        #subprocess.call([cmd], shell=True)
-        #bob=temp.check_output()
-
-        #temp = subprocess.Popen([cmd], shell=True)
-
-        #subprocess.call(['opal rest -o http://192.168.56.101:8080 -u administrator -p password -m POST -ct "application/json" /datasource/bl/tables < my_table.json'], shell=True)
-
-        #os.system(cmd)
-
-        #exit()
-
-        #######################
-        #Now do the variables
-        content_var = {
-            "name": "content",
-            "entityType": "Book",
-            "valueType": "text",
-            "isRepeatable": False,
-            "index": 1,
-        }
-        
-        clean_content_var = {
-            "name": "clean_content",
-            "entityType": "Book",
-            "valueType": "text",
-            "isRepeatable": False,
-            "index": 2,
-        }
-        
-        hpos_var = {
-            "name": "hpos",
-            "entityType": "Book",
-            "valueType": "integer",
-            "isRepeatable": False,
-            "index": 3,
-        }
-        
-        vpos_var = {
-            "name": "vpos",
-            "entityType": "Book",
-            "valueType": "integer",
-            "isRepeatable": False,
-            "index": 4,
-        }
-        
-        width_var = {
-            "name": "width",
-            "entityType": "Book",
-            "valueType": "integer",
-            "isRepeatable": False,
-            "index": 5,
-        }
-        
-        height_var = {
-            "name": "height",
-            "entityType": "Book",
-            "valueType": "integer",
-            "isRepeatable": False,
-            "index": 6,
-        }
-        
-        wc_var = {
-            "name": "wc",
-            "entityType": "Book",
-            "valueType": "decimal",
-            "isRepeatable": False,
-            "index": 7,
-        }
-        
-        cc_var = {
-            "name": "cc",
-            "entityType": "Book",
-            "valueType": "text",
-            "isRepeatable": False,
-            "index": 8,
-        }
-        
-        page_var = {
-            "name": "page",
-            "entityType": "Book",
-            "valueType": "integer",
-            "isRepeatable": False,
-            "index": 9,
-        }
-        
-        all_vars=[]
-        all_vars.append(content_var)
-        all_vars.append(clean_content_var)
-        all_vars.append(hpos_var)
-        all_vars.append(vpos_var)
-        all_vars.append(width_var)
-        all_vars.append(height_var)
-        all_vars.append(wc_var)
-        all_vars.append(cc_var)
-        all_vars.append(page_var)
-        #print all_vars
-        
-        #save it as a json file
-        this_variable_json_name = 'temp/'+table_name+'_vars.json'
-        with open(this_variable_json_name, 'w') as fp:
-            json.dump(all_vars, fp)
-
-            #opal rest -o http://localhost:8080 -u administrator -p password -m POST -ct "application/json" /datasource/my_project/table/my_table/variables < my_variables.json
-            #cmd = 'opal rest -o http://192.168.56.101:8080 -u administrator -p password -m POST -ct "application/json" /datasource/bl/table/my_table/variables < my_variables.json'
-            cmd = 'opal rest -o http://192.168.56.101:8080 -u administrator -p password -m POST -ct "application/json" /datasource/bl/table/'+table_name+'/variables < '+this_variable_json_name
-            os.system(cmd)
+    #subprocess.call([cmd], shell=True)
+    #bob=temp.check_output()
+    
+    #temp = subprocess.Popen([cmd], shell=True)
+    
+    #cmd = 'opal rest -o http://192.168.56.101:8080 -u administrator -p password -m POST -ct "application/json" /datasource/bl/tables < my_table.json'
+    #subprocess.Popen([cmd], shell=True).wait()
+    
+    #doesnt work. gives a 500 error.
+    #subprocess.call(['opal rest -o http://192.168.56.101:8080 -u administrator -p password -m POST -ct "application/json" /datasource/bl/tables < my_table.json'], shell=True)
 
 
+    #doesnt have enough args to run like this.
+    #subprocess.Popen(['opal', 'rest -o http://192.168.56.101:8080 -u administrator -p password -m POST -ct "application/json" /datasource/bl/tables < my_table.json'], shell=True)
+
+    #doesnt work. givse a 500 error.
+    cmd = 'opal rest -o http://192.168.56.101:8080 -u administrator -p password -m POST -ct "application/json" -v /datasource/bl/tables < temp/'+table_name+'.json'
+    os.system(cmd)
+
+    #cmd = 'opal rest -o http://192.168.56.101:8080 -u administrator -p password -m POST -ct "application/json" /datasource/bl/tables < my_table.json'
+    #os.system(cmd)
+    
+    #cmd = 'opal rest -o http://192.168.56.101:8080 -u administrator -p password -m POST -ct "application/json" /datasource/bl/table/my_table/variables < my_variables.json'
+    #os.system(cmd)
+
+    #works
+    #cmd = 'opal rest -o http://192.168.56.101:8080 -u administrator -p password -v /datasource/bl/tables'
+    #os.system(cmd)
+    
+    #This works!
+    #cmd = 'opal rest -o http://192.168.56.101:8080 -u administrator -p password -m DELETE /datasource/bl/table/hamlet'
+    #os.system(cmd)
+    
+    #works
+    #cmd = 'opal rest -o http://192.168.56.101:8080 -u administrator -p password -v /datasource/bl/tables'
+    #os.system(cmd)
+    
+    exit()
+
+    #######################
+    #Now do the variables
+    content_var = {
+        "name": "content",
+        "entityType": "Book",
+        "valueType": "text",
+        "isRepeatable": False,
+        "index": 1,
+    }
+        
+    clean_content_var = {
+        "name": "clean_content",
+        "entityType": "Book",
+        "valueType": "text",
+        "isRepeatable": False,
+        "index": 2,
+    }
+    
+    hpos_var = {
+        "name": "hpos",
+        "entityType": "Book",
+        "valueType": "integer",
+        "isRepeatable": False,
+        "index": 3,
+    }
+    
+    vpos_var = {
+        "name": "vpos",
+        "entityType": "Book",
+        "valueType": "integer",
+        "isRepeatable": False,
+        "index": 4,
+    }
+    
+    width_var = {
+        "name": "width",
+        "entityType": "Book",
+        "valueType": "integer",
+        "isRepeatable": False,
+        "index": 5,
+    }
+    
+    height_var = {
+        "name": "height",
+        "entityType": "Book",
+        "valueType": "integer",
+        "isRepeatable": False,
+        "index": 6,
+    }
+    
+    wc_var = {
+        "name": "wc",
+        "entityType": "Book",
+        "valueType": "decimal",
+        "isRepeatable": False,
+        "index": 7,
+    }
+    
+    cc_var = {
+        "name": "cc",
+        "entityType": "Book",
+        "valueType": "text",
+        "isRepeatable": False,
+        "index": 8,
+    }
+    
+    page_var = {
+        "name": "page",
+        "entityType": "Book",
+        "valueType": "integer",
+        "isRepeatable": False,
+        "index": 9,
+    }
+    
+    all_vars=[]
+    all_vars.append(content_var)
+    all_vars.append(clean_content_var)
+    all_vars.append(hpos_var)
+    all_vars.append(vpos_var)
+    all_vars.append(width_var)
+    all_vars.append(height_var)
+    all_vars.append(wc_var)
+    all_vars.append(cc_var)
+    all_vars.append(page_var)
+    #print all_vars
+    
+    #save it as a json file
+    this_variable_json_name = 'temp/'+table_name+'_vars.json'
+    with open(this_variable_json_name, 'w') as fp:
+        json.dump(all_vars, fp)
+        
+    #opal rest -o http://localhost:8080 -u administrator -p password -m POST -ct "application/json" /datasource/my_project/table/my_table/variables < my_variables.json
+    #cmd = 'opal rest -o http://192.168.56.101:8080 -u administrator -p password -m POST -ct "application/json" /datasource/bl/table/my_table/variables < my_variables.json'
+    cmd = 'opal rest -o http://192.168.56.101:8080 -u administrator -p password -m POST -ct "application/json" /datasource/bl/table/'+table_name+'/variables < '+this_variable_json_name
+    os.system(cmd)
+    
+    
 exit()
 
 #Get the list of files in the directory
