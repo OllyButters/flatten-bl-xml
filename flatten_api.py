@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 
 #Olly Butters
-#18/6/15
+#19/6/15
 
 #First stab at taking one of the BL XML files and flattening it into a CSV file to 
 #push into opal.
@@ -39,17 +39,9 @@ for this_book in books:
     #Set up the table first
     
     table_name = this_book
-    
-    
+        
     #Table definition
     this_table_dic = {'entityType': 'Book', 'name': table_name}
-
-    #this_table = '{\n    "name": "'+table_name+'",\n    "entityType": "Participant"\n}'
-    #print this_table
-
-    #text_file = open("my_table.json", "wb")
-    #text_file.write(this_table)
-    #text_file.close()
 
     #save it as a json file
     this_table_json_name = 'temp/'+table_name+'.json'
@@ -59,63 +51,13 @@ for this_book in books:
         
     #Push the above json file into the opal API, this will make an empty table i.e. no variables.
     #cmd = 'opal rest -o http://192.168.56.101:8080 -u administrator -p password -m POST -ct "application/json" /datasource/bl/tables < '+this_table_json_name
-    cmd = 'opal rest -o http://192.168.56.101:8080 -u administrator -p password -m POST -ct "application/json" /datasource/bl/tables < my_table.json'
-    print cmd
-    
-    
     #cmd = 'opal rest -o http://192.168.56.101:8080 -u administrator -p password -m POST -ct "application/json" /datasource/bl/tables < my_table.json'
+    #print cmd
     
-    #works when an exit after - and needs an enter, I think.
-    #subprocess.Popen(['opal rest -o http://192.168.56.101:8080 -u administrator -p password -m POST -ct "application/json" /datasource/bl/tables < my_table.json'], shell=True)
-    
-    #currently doesnt work.
-    #this works if you exit afterwards.
-    #temp = subprocess.Popen([cmd], shell=True)
-    #temp.wait()
-    #print temp.returncode
-    #exit()
-    
-    #ime.sleep(10)
-    #emp.kill()
-
-    #subprocess.call([cmd], shell=True)
-    #bob=temp.check_output()
-    
-    #temp = subprocess.Popen([cmd], shell=True)
-    
-    #cmd = 'opal rest -o http://192.168.56.101:8080 -u administrator -p password -m POST -ct "application/json" /datasource/bl/tables < my_table.json'
-    #subprocess.Popen([cmd], shell=True).wait()
-    
-    #doesnt work. gives a 500 error.
-    #subprocess.call(['opal rest -o http://192.168.56.101:8080 -u administrator -p password -m POST -ct "application/json" /datasource/bl/tables < my_table.json'], shell=True)
-
-
-    #doesnt have enough args to run like this.
-    #subprocess.Popen(['opal', 'rest -o http://192.168.56.101:8080 -u administrator -p password -m POST -ct "application/json" /datasource/bl/tables < my_table.json'], shell=True)
-
     #doesnt work. givse a 500 error.
-    cmd = 'opal rest -o http://192.168.56.101:8080 -u administrator -p password -m POST -ct "application/json" -v /datasource/bl/tables < temp/'+table_name+'.json'
+    cmd = 'opal rest -o http://192.168.56.101:8080 -u administrator -p password -m POST -ct "application/json" /datasource/bl/tables < temp/'+table_name+'.json'
+    print cmd
     os.system(cmd)
-
-    #cmd = 'opal rest -o http://192.168.56.101:8080 -u administrator -p password -m POST -ct "application/json" /datasource/bl/tables < my_table.json'
-    #os.system(cmd)
-    
-    #cmd = 'opal rest -o http://192.168.56.101:8080 -u administrator -p password -m POST -ct "application/json" /datasource/bl/table/my_table/variables < my_variables.json'
-    #os.system(cmd)
-
-    #works
-    #cmd = 'opal rest -o http://192.168.56.101:8080 -u administrator -p password -v /datasource/bl/tables'
-    #os.system(cmd)
-    
-    #This works!
-    #cmd = 'opal rest -o http://192.168.56.101:8080 -u administrator -p password -m DELETE /datasource/bl/table/hamlet'
-    #os.system(cmd)
-    
-    #works
-    #cmd = 'opal rest -o http://192.168.56.101:8080 -u administrator -p password -v /datasource/bl/tables'
-    #os.system(cmd)
-    
-    exit()
 
     #######################
     #Now do the variables
@@ -267,3 +209,13 @@ with open('data.csv','wb') as csvfile:
                     #Output the information to screen and file
                     print content, clean_content, id, hpos, vpos, width, height, wc, cc, page_number
                     string_file.writerow([id, content.encode('utf-8'), clean_content.encode('utf-8'), hpos, vpos, width, height, wc, cc, page_number])
+
+
+#Need to extend these commands
+
+#upload the data file
+#opal file --opal http://192.168.56.101:8080 --user administrator --password password -up hamlet.csv /home/administrator
+
+#import the data
+#opal import-csv -o http://192.168.56.101:8080 -u administrator -p password -d bl --path /home/administrator/data.csv --type Book -v
+
