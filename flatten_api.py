@@ -35,7 +35,19 @@ project = 'bl'
 root_dir = os.getcwd()
 
 #List of all the books to process
-books = ['hamlet']
+#books = ['hamlet']
+
+#Grab the first bit of the xml file name - should be unique for each book?
+xml_file_name = '002175085_01_000001.xml'
+temp = xml_file_name.split('_')
+books=[]
+books.append(temp[0])
+
+
+print books
+
+
+#books = ['002175085']
 
 
 for this_book in books:
