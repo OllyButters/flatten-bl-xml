@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 
 #Olly Butters
-#20/6/15
+#3/7/15
 
 #First stab at taking one of the BL XML files and flattening it into a CSV file to 
 #push into opal.
@@ -19,37 +19,46 @@
 #id,     content, clean_content, hpos, vpos, width, height, wc,      cc,     page
 #string, string,  string,        int,  int,  int,   int,    decimal, string, int
 
-import xml.etree.ElementTree as ET
 import csv
-import os
-import sys
+import glob
 import json
+import os
 import subprocess
+import sys
 import time
+import xml.etree.ElementTree as ET
 
-#opal project that tables get put into
-project = 'bl'
+opal_address = '192.168.56.100:8080' #opal IP address
+project = 'bl'                     #opal project that tables get put into
 
-book_dir = '../data/'
+book_dir = 'data/000000037_0_1-42pgs__944211_dat'
 
 #Make a temp directory to put all the temp JSON and CSV files.
 #os.mkdir('temp')
 root_dir = os.getcwd()
 
 #Get a list of all the metadata files
-metadata_files = glob.glob("*_metadata.xml")
+books = []
+metadata_files = glob.glob(book_dir+"/*_metadata.xml")
+for this_file in metadata_files:
+    file_name = os.path.basename(this_file)
+    file_name_parts = file_name.split('_')
+    books.append(file_name_parts[0])
+
+print metadata_files
+print books
 
 #List of all the books to process
 #books = ['hamlet']
 
 #Grab the first bit of the xml file name - should be unique for each book?
-xml_file_name = '002175085_01_000001.xml'
-temp = xml_file_name.split('_')
-books=[]
-books.append(temp[0])
+#xml_file_name = '002175085_01_000001.xml'
+#temp = xml_file_name.split('_')
+#books=[]
+#books.append(temp[0])
 
 
-print books
+#print books
 
 
 #books = ['002175085']
@@ -71,7 +80,7 @@ for this_book in books:
         json.dump(this_table_dic, fp, indent=4)
         
     #Push the above json file into the opal API, this will make an empty table i.e. no variables.
-    cmd = 'opal rest -o http://192.168.56.101:8080 --user administrator --password password -m POST -ct "application/json" /datasource/bl/tables < temp/'+table_name+'_table.json'
+    cmd = 'opal rest -o http://'+opal_address+' --user administrator --password password -m POST -ct "application/json" /datasource/bl/tables < temp/'+table_name+'_table.json'
     #print cmd
     os.system(cmd)
 
@@ -167,7 +176,7 @@ for this_book in books:
     with open(this_variable_json_name, 'w') as fp:
         json.dump(all_vars, fp)
     
-    cmd = 'opal rest -o http://192.168.56.101:8080 --user administrator --password password -m POST -ct "application/json" /datasource/'+project+'/table/'+table_name+'/variables < '+this_variable_json_name
+    cmd = 'opal rest -o http://'+opal_address+' --user administrator --password password -m POST -ct "application/json" /datasource/'+project+'/table/'+table_name+'/variables < '+this_variable_json_name
     os.system(cmd)
     
     ###############################################################
@@ -176,7 +185,9 @@ for this_book in books:
     print 'Processing XML files'
 
     #Get the list of files in the directory
-    pages = os.listdir('data')
+    #pages = os.listdir('data')
+    #pages = os.listdir(book_dir+'/ALTO/')
+    pages = glob.glob(book_dir+'/ALTO/'+this_book+'_*.xml')
 
     #Set the output file
     #table_name = 'hamlet'
@@ -192,7 +203,8 @@ for this_book in books:
             print this_page
         
             #Parse the xml file
-            tree = ET.parse('data/'+this_page)
+            #tree = ET.parse(book_dir+'/ALTO/'+this_page)
+            tree = ET.parse(this_page)
             
             #Set a root
             root = tree.getroot()
@@ -233,13 +245,14 @@ for this_book in books:
     #upload the data file
     print 'Uploading data file'
     #opal file --opal http://192.168.56.101:8080 --user administrator --password password -up hamlet.csv /home/administrator
-    cmd = 'opal file --opal http://192.168.56.101:8080 --user administrator --password password -up '+output_csv_file+' /home/administrator'
+    cmd = 'opal file --opal http://'+opal_address+' --user administrator --password password -up '+output_csv_file+' /home/administrator'
     os.system(cmd)
 
     ###############################
     #import the data
     print 'Importing the data'
     #opal import-csv -o http://192.168.56.101:8080 -u administrator -p password -d bl --path /home/administrator/data.csv --type Book -v
-    cmd = 'opal import-csv -o http://192.168.56.101:8080 --user administrator --password password --destination '+project+' --table '+table_name+' --path /home/administrator/hamlet.csv --type Book'
+    cmd = 'opal import-csv -o http://'+opal_address+' --user administrator --password password --destination '+project+' --table '+table_name+' --path /home/administrator/'+table_name+'.csv --type Book'
+    print cmd
     os.system(cmd)
 
