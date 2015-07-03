@@ -30,9 +30,14 @@ import time
 #opal project that tables get put into
 project = 'bl'
 
+book_dir = '../data/'
+
 #Make a temp directory to put all the temp JSON and CSV files.
 #os.mkdir('temp')
 root_dir = os.getcwd()
+
+#Get a list of all the metadata files
+metadata_files = glob.glob("*_metadata.xml")
 
 #List of all the books to process
 #books = ['hamlet']
